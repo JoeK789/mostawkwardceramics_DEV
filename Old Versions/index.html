@@ -74,19 +74,6 @@ footer{padding:30px 0;border-top:1px solid rgba(0,0,0,.08);font-family:ui-sans-s
   .wrap{width:min(100% - 28px,1180px)}.gallery{grid-template-columns:1fr}.collage{min-height:330px}
   h1{font-size:42px}.brand{font-size:20px}section{padding:58px 0}
 }
-
-.show{cursor:pointer}
-.show:hover{background:rgba(154,98,72,.05)}
-.show-main{min-width:0}
-.show-dates{margin-top:8px;display:grid;gap:4px;color:#5f584f;font-size:13px}
-.show-details{grid-column:1/-1;margin-top:10px;padding:14px 16px;border-radius:16px;background:#f1eadf;display:none}
-.show.open .show-details{display:block}
-.show-details p{margin:4px 0;line-height:1.5}
-.show-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.show-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;text-decoration:none;background:var(--clay);color:white;font-weight:650;font-size:13px}
-.show-link.secondary-link{background:transparent;color:var(--ink);border:1px solid rgba(0,0,0,.18)}
-.show-status{padding:18px 0;color:#71695f}
-
 </style>
 </head>
 <body>
@@ -188,10 +175,12 @@ footer{padding:30px 0;border-top:1px solid rgba(0,0,0,.08);font-family:ui-sans-s
         <p class="sans" style="color:#686055;line-height:1.7;font-size:17px">The real site's upcoming events can be turned into clean, easy-to-scan cards instead of a long wall of links.</p>
       </div>
       <div>
-        <div class="show-list" id="showList">
-          <div class="show-status">Loading upcoming shows…</div>
+        <div class="show-list">
+          <div class="show"><div class="date"><div class="m">Sep</div><div class="d">05</div></div><div><strong>Fall Art Show</strong><small>St. Louis area • Event details & directions</small></div></div>
+          <div class="show"><div class="date"><div class="m">Oct</div><div class="d">10</div></div><div><strong>Art in the Park</strong><small>St. Louis area • Event details & directions</small></div></div>
+          <div class="show"><div class="date"><div class="m">Nov</div><div class="d">14</div></div><div><strong>Holiday Craft Fair</strong><small>St. Louis area • Event details & directions</small></div></div>
         </div>
-        <div class="placeholder">Show information is updated automatically from Megan's Google Sheet.</div>
+        <div class="placeholder">Mockup dates are placeholders — the finished version would use the owner's real schedule.</div>
       </div>
     </div>
   </div>
@@ -226,178 +215,6 @@ buttons.forEach(btn=>btn.addEventListener('click',()=>{
     card.style.display=(f==='all'||card.dataset.kind.split(' ').includes(f))?'block':'none';
   });
 }));
-
-const SHOWS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSu75MF2w-qfyFKIHUnhr8T7vBjY9ETm6tuvyITRbX216lM9Y8h9i6LTn0b92iV3ViZ7cRjds0ctDzj/pub?gid=0&single=true&output=csv';
-
-function parseCSV(text) {
-  const rows = [];
-  let row = [], field = '', quoted = false;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    const next = text[i + 1];
-    if (ch === '"' && quoted && next === '"') {
-      field += '"'; i++;
-    } else if (ch === '"') {
-      quoted = !quoted;
-    } else if (ch === ',' && !quoted) {
-      row.push(field); field = '';
-    } else if ((ch === '\n' || ch === '\r') && !quoted) {
-      if (ch === '\r' && next === '\n') i++;
-      row.push(field); field = '';
-      if (row.some(v => v.trim() !== '')) rows.push(row);
-      row = [];
-    } else {
-      field += ch;
-    }
-  }
-  if (field.length || row.length) {
-    row.push(field);
-    if (row.some(v => v.trim() !== '')) rows.push(row);
-  }
-  return rows;
-}
-
-function parseSheetDate(value) {
-  const v = (value || '').trim();
-  if (!v) return null;
-  const m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (m) return new Date(Number(m[3]), Number(m[1])-1, Number(m[2]));
-  const d = new Date(v);
-  return Number.isNaN(d.getTime()) ? null : d;
-}
-
-function esc(value) {
-  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
-}
-
-function mapsUrl(address) {
-  return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address);
-}
-
-function formatRange(dates) {
-  const sorted = [...dates].sort((a,b)=>a-b);
-  if (sorted.length === 1) {
-    return sorted[0].toLocaleDateString('en-US', {month:'short', day:'numeric'});
-  }
-  const first = sorted[0], last = sorted[sorted.length-1];
-  if (first.getMonth() === last.getMonth()) {
-    return `${first.toLocaleDateString('en-US', {month:'short'})} ${first.getDate()}–${last.getDate()}`;
-  }
-  return `${first.toLocaleDateString('en-US', {month:'short', day:'numeric'})} – ${last.toLocaleDateString('en-US', {month:'short', day:'numeric'})}`;
-}
-
-async function loadShows() {
-  const list = document.getElementById('showList');
-  try {
-    const response = await fetch(SHOWS_CSV_URL, {cache:'no-store'});
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const rows = parseCSV(await response.text());
-    if (rows.length < 2) throw new Error('No show rows found');
-
-    const headers = rows[0].map(h => h.trim());
-    const idx = name => headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
-
-    const iName = idx('Show Name');
-    const iDate = idx('Date');
-    const iTime = idx('Time');
-    const iVenue = idx('Venue');
-    const iAddress = idx('Address');
-    const iWebsite = idx('Event Website');
-
-    if ([iName,iDate,iTime,iVenue,iAddress].some(i => i < 0)) {
-      throw new Error('Required spreadsheet columns are missing');
-    }
-
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const groups = new Map();
-
-    rows.slice(1).forEach(r => {
-      const name = (r[iName] || '').trim();
-      const date = parseSheetDate(r[iDate]);
-      if (!name || !date || date < today) return;
-
-      const key = name.toLowerCase();
-      if (!groups.has(key)) {
-        groups.set(key, {
-          name,
-          venue:(r[iVenue]||'').trim(),
-          address:(r[iAddress]||'').trim(),
-          website:iWebsite >= 0 ? (r[iWebsite]||'').trim() : '',
-          days:[]
-        });
-      }
-      const g = groups.get(key);
-      g.days.push({date, time:(r[iTime]||'').trim()});
-      if (!g.venue && r[iVenue]) g.venue = r[iVenue].trim();
-      if (!g.address && r[iAddress]) g.address = r[iAddress].trim();
-      if (!g.website && iWebsite >= 0 && r[iWebsite]) g.website = r[iWebsite].trim();
-    });
-
-    const shows = [...groups.values()].sort((a,b) =>
-      Math.min(...a.days.map(x=>x.date.getTime())) - Math.min(...b.days.map(x=>x.date.getTime()))
-    );
-
-    if (!shows.length) {
-      list.innerHTML = '<div class="show-status">No upcoming shows are currently listed.</div>';
-      return;
-    }
-
-    list.innerHTML = shows.map(show => {
-      show.days.sort((a,b)=>a.date-b.date);
-      const first = show.days[0].date;
-      const dateLines = show.days.map(day =>
-        `<div>${day.date.toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'})}${day.time ? ' • ' + esc(day.time) : ''}</div>`
-      ).join('');
-
-      const website = show.website
-        ? `<a class="show-link secondary-link" href="${esc(show.website)}" target="_blank" rel="noopener">Event Website</a>`
-        : '';
-      const directions = show.address
-        ? `<a class="show-link" href="${mapsUrl(show.address)}" target="_blank" rel="noopener">Get Directions</a>`
-        : '';
-
-      return `
-        <div class="show" tabindex="0" role="button" aria-expanded="false">
-          <div class="date">
-            <div class="m">${first.toLocaleDateString('en-US', {month:'short'})}</div>
-            <div class="d">${first.getDate()}</div>
-          </div>
-          <div class="show-main">
-            <strong>${esc(show.name)}</strong>
-            <small>${esc(formatRange(show.days.map(x=>x.date)))}${show.venue ? ' • ' + esc(show.venue) : ''}</small>
-            <div class="show-dates">${dateLines}</div>
-          </div>
-          <div class="show-details">
-            ${show.venue ? `<p><strong>Venue:</strong> ${esc(show.venue)}</p>` : ''}
-            ${show.address ? `<p><strong>Address:</strong> ${esc(show.address)}</p>` : ''}
-            <div class="show-actions">${directions}${website}</div>
-          </div>
-        </div>`;
-    }).join('');
-
-    list.querySelectorAll('.show').forEach(card => {
-      const toggle = () => {
-        const open = card.classList.toggle('open');
-        card.setAttribute('aria-expanded', String(open));
-      };
-      card.addEventListener('click', e => {
-        if (e.target.closest('a')) return;
-        toggle();
-      });
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault(); toggle();
-        }
-      });
-    });
-  } catch (err) {
-    console.error('Could not load shows:', err);
-    list.innerHTML = '<div class="show-status">Upcoming shows could not be loaded right now. Please try again shortly.</div>';
-  }
-}
-
-loadShows();
 </script>
 </body>
 </html>
