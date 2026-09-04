@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Most Awkward Ceramics — Homepage Mockup</title>
+<style>
+:root{
+  --clay:#9a6248;--sage:#778674;--cream:#f7f2e8;--paper:#fbf8f2;
+  --ink:#302d28;--muted:#6f675d;--soft:#e9e0d2;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif}
+button,a{font:inherit}
+.sans{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+header{position:sticky;top:0;z-index:10;background:rgba(251,248,242,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.09)}
+.nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.tagline{font-size:12px;color:#766d61;margin-top:2px}
+nav{display:flex;gap:28px}
+nav a{color:#575148;text-decoration:none;font-size:14px}
+.hero{background:linear-gradient(135deg,#f4ede1 0%,#eee4d5 100%);padding:72px 0}
+.hero-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:52px;align-items:center}
+.eyebrow{font-family:ui-sans-serif,system-ui,sans-serif;letter-spacing:.17em;text-transform:uppercase;font-size:11px;color:var(--clay);margin-bottom:16px}
+h1{font-size:clamp(44px,6vw,72px);line-height:1.01;letter-spacing:-.045em;margin:0}
+.hero p{font-family:ui-sans-serif,system-ui,sans-serif;font-size:18px;line-height:1.65;color:#625b51;max-width:590px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:999px;text-decoration:none;font-family:ui-sans-serif,system-ui,sans-serif;font-weight:650}
+.primary{background:var(--clay);color:white}
+.secondary{border:1px solid #766d61;color:#403b34}
+.note{font-style:italic;color:#786f62;font-size:14px;margin-top:22px}
+.collage{display:grid;grid-template-columns:3fr 2fr;grid-template-rows:1fr 1fr;gap:14px;min-height:510px}
+.cardimg{overflow:hidden;border-radius:30px;background:#ddd4c7}
+.cardimg:first-child{grid-row:1/3}
+.cardimg img,.gallery-card img,.about-image img{width:100%;height:100%;display:block;object-fit:cover}
+section{padding:78px 0}
+.section-title{font-size:clamp(34px,4vw,50px);margin:0;letter-spacing:-.03em}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:34px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filter{border:1px solid rgba(0,0,0,.15);background:transparent;border-radius:999px;padding:10px 16px;cursor:pointer}
+.filter.active{background:var(--ink);color:white}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.gallery-card .photo{aspect-ratio:4/3;border-radius:26px;overflow:hidden;background:#e5ddd1}
+.gallery-card h3{font-family:ui-sans-serif,system-ui,sans-serif;margin:12px 0 0;font-size:17px}
+.gallery-card p{font-family:ui-sans-serif,system-ui,sans-serif;margin:6px 0 0;color:#756d61;font-size:14px;line-height:1.5}
+.statement{background:#dfe3da}
+.statement-grid{display:grid;grid-template-columns:1fr 2fr;gap:50px}
+.statement p{font-family:ui-sans-serif,system-ui,sans-serif;color:#555248;line-height:1.8;font-size:17px}
+.shows-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:60px}
+.show-list{font-family:ui-sans-serif,system-ui,sans-serif;border-top:1px solid rgba(0,0,0,.1);border-bottom:1px solid rgba(0,0,0,.1)}
+.show{display:grid;grid-template-columns:78px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.1)}
+.show:last-child{border-bottom:0}
+.date{text-align:center}
+.date .m{text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:#8a6552}
+.date .d{font-size:26px;font-weight:700}
+.show strong{display:block;margin-top:4px}
+.show small{display:block;margin-top:5px;color:#71695f}
+.placeholder{font-family:ui-sans-serif,system-ui,sans-serif;font-size:12px;color:#81796e;margin-top:12px}
+.about{background:#6e7669;color:white}
+.about-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:46px;align-items:center}
+.about-image{aspect-ratio:4/3;border-radius:30px;overflow:hidden;background:rgba(255,255,255,.1)}
+.about p{font-family:ui-sans-serif,system-ui,sans-serif;line-height:1.8;color:rgba(255,255,255,.86);font-size:16px}
+.about .eyebrow{color:rgba(255,255,255,.7)}
+.about .btn{background:white;color:#4f574a}
+footer{padding:30px 0;border-top:1px solid rgba(0,0,0,.08);font-family:ui-sans-serif,system-ui,sans-serif;color:#756e64;font-size:14px}
+.footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media(max-width:820px){
+  nav{display:none}.hero{padding:48px 0}.hero-grid,.statement-grid,.shows-grid,.about-grid{grid-template-columns:1fr}
+  .collage{min-height:420px}.gallery{grid-template-columns:1fr 1fr}.section-head{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:560px){
+  .wrap{width:min(100% - 28px,1180px)}.gallery{grid-template-columns:1fr}.collage{min-height:330px}
+  h1{font-size:42px}.brand{font-size:20px}section{padding:58px 0}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div>
+      <div class="brand">Most Awkward Ceramics</div>
+      <div class="tagline sans">Handmade pottery • St. Louis area</div>
+    </div>
+    <nav class="sans">
+      <a href="#work">Work</a><a href="#shows">Shows</a><a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Useful • whimsical • a little weird</div>
+      <h1>Perfectly imperfect pottery for people who like things with personality.</h1>
+      <p>One-of-a-kind ceramics inspired by native plants, backyard creatures, gardens, and the wonderfully awkward little details that make handmade work special.</p>
+      <div class="actions">
+        <a class="btn primary" href="#work">Explore the pottery</a>
+        <a class="btn secondary" href="#shows">Find me at a show</a>
+      </div>
+      <div class="note">No two pieces are exactly alike. That's kind of the point.</div>
+    </div>
+    <div class="collage">
+      <div class="cardimg"><img src="https://mostawkwardceramics.com/gallery2.PNG" alt="Most Awkward Ceramics pottery"></div>
+      <div class="cardimg"><img src="https://mostawkwardceramics.com/gallery35.PNG" alt="Native plant ceramic mugs"></div>
+      <div class="cardimg"><img src="https://mostawkwardceramics.com/gallery1.PNG" alt="Handmade ceramic collection"></div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow" style="color:var(--sage)">Featured work</div>
+        <h2 class="section-title">Made to be used. Made to make you grin.</h2>
+      </div>
+      <div class="filters sans">
+        <button class="filter active" data-filter="all">All</button>
+        <button class="filter" data-filter="garden">Garden</button>
+        <button class="filter" data-filter="home">Home</button>
+        <button class="filter" data-filter="plants">Native plants</button>
+      </div>
+    </div>
+    <div class="gallery" id="gallery">
+      <article class="gallery-card" data-kind="home plants">
+        <div class="photo"><img src="https://mostawkwardceramics.com/gallery35.PNG" alt="Native plant mugs"></div>
+        <h3>Native Plant Mugs</h3><p>Botanical details, earthy glazes, everyday usefulness.</p>
+      </article>
+      <article class="gallery-card" data-kind="garden">
+        <div class="photo"><img src="https://mostawkwardceramics.com/gallery2.PNG" alt="Ceramic garden pieces"></div>
+        <h3>Creature Bird Baths</h3><p>Backyard art with birds, frogs, leaves and surprises.</p>
+      </article>
+      <article class="gallery-card" data-kind="home">
+        <div class="photo"><img src="https://mostawkwardceramics.com/gallery1.PNG" alt="Handmade home ceramics"></div>
+        <h3>Quirky Home Goods</h3><p>Useful pieces that refuse to be boring.</p>
+      </article>
+      <article class="gallery-card" data-kind="home">
+        <div class="photo"><img src="https://mostawkwardceramics.com/gallery71.PNG" alt="Mugs bowls and leaf dish"></div>
+        <h3>Mugs & Bowls</h3><p>Handmade, imperfect, and very much alive.</p>
+      </article>
+      <article class="gallery-card" data-kind="garden home">
+        <div class="photo"><img src="https://mostawkwardceramics.com/gallery75.PNG" alt="Bird bath mug and honey jar"></div>
+        <h3>Small-Batch Favorites</h3><p>Planters, bowls, yarn pieces and whatever feels fun next.</p>
+      </article>
+      <article class="gallery-card" data-kind="plants home">
+        <div class="photo"><img src="https://mostawkwardceramics.com/gallery51.PNG" alt="Native plant ceramic pieces"></div>
+        <h3>Leaves & Natural Forms</h3><p>Texture and shapes borrowed from the outdoors.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="statement">
+  <div class="wrap statement-grid">
+    <div>
+      <div class="eyebrow" style="color:#596659">Why awkward?</div>
+      <h2 class="section-title">Because handmade should look handmade.</h2>
+    </div>
+    <div>
+      <p>Small variations, unexpected textures, tiny creatures, fingerprints, crooked smiles — those aren't flaws. They're the parts that give each piece its character.</p>
+      <p>The goal isn't factory-perfect pottery. It's something you'll pick up ten years from now and still know exactly who made it.</p>
+    </div>
+  </div>
+</section>
+
+<section id="shows">
+  <div class="wrap">
+    <div class="eyebrow">Come say hi</div>
+    <div class="shows-grid">
+      <div>
+        <h2 class="section-title">Find Most Awkward Ceramics in the wild.</h2>
+        <p class="sans" style="color:#686055;line-height:1.7;font-size:17px">The real site's upcoming events can be turned into clean, easy-to-scan cards instead of a long wall of links.</p>
+      </div>
+      <div>
+        <div class="show-list">
+          <div class="show"><div class="date"><div class="m">Sep</div><div class="d">05</div></div><div><strong>Fall Art Show</strong><small>St. Louis area • Event details & directions</small></div></div>
+          <div class="show"><div class="date"><div class="m">Oct</div><div class="d">10</div></div><div><strong>Art in the Park</strong><small>St. Louis area • Event details & directions</small></div></div>
+          <div class="show"><div class="date"><div class="m">Nov</div><div class="d">14</div></div><div><strong>Holiday Craft Fair</strong><small>St. Louis area • Event details & directions</small></div></div>
+        </div>
+        <div class="placeholder">Mockup dates are placeholders — the finished version would use the owner's real schedule.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-image"><img src="https://mostawkwardceramics.com/gallery1.PNG" alt="Selection of Most Awkward Ceramics pottery"></div>
+    <div>
+      <div class="eyebrow">Meet the maker</div>
+      <h2 class="section-title">Hi, I'm Megan.</h2>
+      <p>This space can tell her story in a few warm paragraphs: why she started making ceramics, where the native-plant inspiration comes from, and why animals keep sneaking onto everything.</p>
+      <p>A personal story makes the site feel less like a catalog and more like visiting an artist's booth.</p>
+      <div class="actions"><a class="btn" href="https://mostawkwardceramics.com/" target="_blank" rel="noopener">Current website</a></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap footer"><span>Most Awkward Ceramics</span><span>Homepage concept mockup • 2026</span></div>
+</footer>
+
+<script>
+const buttons=[...document.querySelectorAll('.filter')];
+const cards=[...document.querySelectorAll('.gallery-card')];
+buttons.forEach(btn=>btn.addEventListener('click',()=>{
+  buttons.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const f=btn.dataset.filter;
+  cards.forEach(card=>{
+    card.style.display=(f==='all'||card.dataset.kind.split(' ').includes(f))?'block':'none';
+  });
+}));
+</script>
+</body>
+</html>
